@@ -1,7 +1,13 @@
 # study_javascript
 study_javascript.git
 ### Donation
-'''html
+
+```javascript
+function test (){
+}
+```
+
+```html
 <code>
 <!DOCTYPE html>
 <html lang="cn">
@@ -59,4 +65,4 @@ img{border: none;}
 </body>
 </html>
 </code>
-'''
+```
