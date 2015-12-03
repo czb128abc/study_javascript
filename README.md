@@ -1,6 +1,6 @@
 # study_javascript
 study_javascript.git
-''
+'''html
 <code>
 <!DOCTYPE html>
 <html lang="cn">
@@ -58,4 +58,4 @@ img{border: none;}
 </body>
 </html>
 </code>
-''
+'''
