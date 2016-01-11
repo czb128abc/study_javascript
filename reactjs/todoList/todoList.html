@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>todo</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="./todomvc-common/base.css">
+    <link rel="stylesheet" type="text/css" href="./todomvc-app-css/index.css">
+    <script src="./../build/react.js"></script>
+    <script src="./../build/react-dom.js"></script>
+    <script src="./../build/browser.min.js"></script>
+</head>
+<body>
+<div id="todoapp"></div>
+<script type="text/babel">
+    var TodoObj = function(text){
+      this.text = text;
+      this.checked = false;
+      this.id = new Date().getTime();
+    } 
+    var App = React.createClass({
+      allChecked : function( ){
+
+      },
+      addTodo : function( todoItem ){
+          console.log('exec addTodo ' +JSON.stringify(todoItem));
+
+          this.state.todoSet.push(todoItem);
+          console.dir(this.state.todoSet);
+          this.setState(function(state){
+            debugger;
+            return this.state.todoSet;
+          });
+      },
+      changeTodoState : function( index, isDone, isChangeAll=false){
+
+      },
+      clearDone : function( ){
+
+      },
+      deleteTodo : function( index ){
+
+      },
+      render : function(){
+        this.state = this.state||{};
+        this.state.todoSet = [];
+        var props  ={
+          todoSet:this.state.todoSet
+        };
+        return (
+          <div className="todoapp">
+            <TodoHeader callbackParent={this.addTodo}/> 
+            <TodoMain todos={this.state.todoSet}/>
+            <TodoFooter/>
+          </div>
+        );
+      }
+    });
+    var TodoHeader = React.createClass({
+      handleNewTodoKeyDown : function(event){
+          if(event.keyCode !==13){
+            return;
+          }
+          event.preventDefault();
+          var newTodo = this.state.newTodo;
+          console.log('handleNewTodoKeyDown-->  '+this.state.newTodo);
+          // 这里要注意：setState 是一个异步方法，所以需要操作缓存的当前值
+          var obj = new TodoObj(newTodo);
+          this.props.callbackParent(obj);
+          event.target.value = '';
+      },
+      //on 改变事件
+      handleChange : function(event){
+        this.setState(function(state) {
+            return {
+                newTodo: event.target.value
+            };
+        });
+        
+      },  
+      render : function(){
+        return(
+          <h1>todos</h1>,
+          <div className="header">
+             <input className="new-todo" 
+              placehoder="请输入待办项"
+              onChange = {this.handleChange}
+              onKeyDown = {this.handleNewTodoKeyDown}
+             /> 
+          </div>
+        )
+      }
+    });
+    var TodoMain = React.createClass({
+      render : function(){
+        return(
+          <ul className="todo-list">
+              {this.props.todos.map((todo, index) => {
+                return <TodoItem key={index} {...todo} index={index} {...this.props}/>
+              })}
+          </ul>
+        )
+      }
+    });
+    var TodoItem = React.createClass({
+      render : function(){
+        console.log('rend todoItem ');
+        return(
+          <li className="">
+            <div className="view">
+              item text{this.props.text} 
+            </div>
+          </li>
+        )
+      }
+    });
+    var TodoFooter = React.createClass({
+      render : function(){
+        return(
+          <footer className="footer">
+            <span className="todo-count">
+              <strong></strong>item left
+            </span>
+            <ul className="filters">
+              <li><a className="selected" href="#/">All</a></li>
+              <li><a className="" href="#/active">Active</a></li>
+              <li><a className="" href="#/completed">Completed</a></li>
+            </ul>
+          </footer>
+        )
+      }
+    });
+
+    ReactDOM.render(
+      <App></App>
+      ,document.getElementById('todoapp')
+    );
+</script>
+</body>
+</html>

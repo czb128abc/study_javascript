@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta charset="utf-8">
+
+    <script src="./../build/react.js"></script>
+    <script src="./../build/react-dom.js"></script>
+    <script src="./../build/browser.min.js"></script>
+</head>
+<body>
+<div id="message" align="center"></div>
+<div id="likeBtnWrapper"></div>
+<script type="text/babel">
+    var Counter = React.createClass({
+        getInitialState: function () {
+            return { clickCount: 0 };
+        },
+        handleClick: function () {
+            this.setState(function(state) {
+                console.dir(this);
+                return {
+                    clickCount: state.clickCount + 1
+                };
+            });
+        },
+        render: function () {
+            return (<h2 onClick={this.handleClick}>Click me! Number of clicks: {this.state.clickCount}</h2>);
+        }
+    });
+
+    var LikeButtom = React.createClass({
+        getInitialState:function(){
+            return {liked:false}
+        },
+        handleClick:function(event){
+            this.setState({
+                liked:!this.state.liked
+            });
+        },
+        render: function(){
+            var text = this.state.liked?'like':'havent\'t liked';
+            return(
+                <p onClick={this.handleClick}>
+                    you {text} this , click to toggle
+                </p>
+            );
+        }
+    });
+    ReactDOM.render(
+            <Counter/>,
+            document.getElementById('message')
+    );
+    ReactDOM.render(
+        <LikeButtom/>,
+        document.getElementById('likeBtnWrapper')
+    );
+</script>
+</body>
+</html>

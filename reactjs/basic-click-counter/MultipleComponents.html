@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta charset="utf-8">
+
+    <script src="./../build/react.js"></script>
+    <script src="./../build/react-dom.js"></script>
+    <script src="./../build/browser.min.js"></script>
+</head>
+<body>
+<div id="Avatar" align="center"></div>
+<div id="CheckLink_wrapper" align="center"></div>
+<div id="TickTock_wrapper"></div>
+<id id="FancyCheckbox_Wrapper"></id>
+<script type="text/babel">
+    var Avatar = React.createClass({
+        render: function(){
+            return (
+                <div>
+                    <ProfilePic userName = {this.props.userName} results={this.props.results}/>
+                    <ProfileLink userName = {this.props.userName}/>
+                </div>
+            );
+        }
+    });
+    var ProfilePic = React.createClass({
+        render : function(){
+            var results = this.props.results;
+            return(
+                <div>
+                    <a>{this.props.userName+' in the img '}</a>,
+                    <span>{this.props.results}</span>
+                    <span>{this.props.results}</span>
+                    <span>{this.props.results}</span>
+
+                </div>
+            );
+        }
+    });
+    var ProfileLink = React.createClass({
+        render : function(){
+            return (
+                <a href="">{this.props.userName}</a>
+            );
+        }
+    });
+    
+
+    ReactDOM.render(
+        <Avatar userName="bob" age="18" results="[1,2,3]"/>
+        ,document.getElementById('Avatar')
+    );
+
+
+    var CheckLink = React.createClass({
+        render : function (){
+            return <a {...this.props}>{'√ '}{this.props.children}</a>;
+        }
+    });
+
+    ReactDOM.render(
+        <CheckLink href="/chcked.html" title="checkLink title">
+        text is checked
+        </CheckLink>
+        ,document.getElementById('CheckLink_wrapper')
+    );
+
+    //Mixins
+    var SetIntervalMixin = {
+      componentWillMount: function() {
+        this.intervals = [];
+      },
+      setInterval: function() {
+        this.intervals.push(setInterval.apply(null, arguments));
+      },
+      componentWillUnmount: function() {
+        this.intervals.forEach(clearInterval);
+      }
+    };
+
+    var TickTock = React.createClass({
+      mixins: [SetIntervalMixin], // Use the mixin
+      getInitialState: function() {
+        return {seconds: 0};
+      },
+      componentDidMount: function() {
+        this.setInterval(this.tick, 1000); // Call a method on the mixin
+      },
+      tick: function() {
+        this.setState({seconds: this.state.seconds + 1});
+      },
+      render: function() {
+        return (
+          <p>
+            React has been running for {this.state.seconds} seconds.
+          </p>
+        );
+      }
+    });
+
+    ReactDOM.render(
+      <TickTock />,
+      document.getElementById('TickTock_wrapper')
+    );
+
+
+    var FancyCheckbox = React.createClass({
+      render: function() {
+        console.dir(this);
+        var fancyClass = this.props.checked ? 'FancyChecked' : 'FancyUnchecked';
+        return (
+          <div className={fancyClass} onClick={this.props.onClick}>
+            {this.props.children}
+          </div>
+        );
+      }
+    });
+    ReactDOM.render(
+      <FancyCheckbox checked={false} onClick={console.log.bind(console)}>
+        Hello world!
+      </FancyCheckbox>,
+      document.getElementById('FancyCheckbox_Wrapper')  
+    );    
+</script>
+</body>
+</html>
