@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>todo</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="./todomvc-common/base.css">
+    <link rel="stylesheet" type="text/css" href="./todomvc-app-css/index.css">
+    <script src="./../build/react.js"></script>
+    <script src="./../build/react-dom.js"></script>
+    <script src="./../build/browser.min.js"></script>
+</head>
+<body>
+<div id="todoapp"></div>
+<div id="logs">
+  已实现的功能有:
+  <br/>
+  add / checked / delete / switch view   
+</div>
+<script type="text/babel">
+    var TodoObj = function(text){
+      this.text = text;
+      this.checked = false;
+      this.id = new Date().getTime();
+    } 
+    var App = React.createClass({
+      getInitialState: function(){
+        return {
+          todoSet:[],
+          currentView :'all',
+          viewSet:['all','active','completed']
+        }
+      },
+      allChecked : function( ){
+
+      },
+      addTodo : function( todoItem ){
+          console.log('exec addTodo ' +JSON.stringify(todoItem));
+          this.setState(function(state){
+            state.todoSet.push(todoItem);
+          });
+      },
+      changeTodoState : function(isChecked,todo){
+        console.info('changeTodoState');
+        this.setState(function(state){
+          var todoSet = this.state.todoSet;
+          for(var i=0;i<todoSet.length;i++){
+            if(todoSet[i].id === todo.id){
+              todoSet[i].checked = isChecked;
+            }
+          }
+          return todoSet;
+        });
+        
+        
+      },
+      clearDone : function( ){
+
+      },
+
+      deleteTodo : function( todo ){
+        this.setState(function(state){
+          var todoSet = state.todoSet;
+          var newSet =[];
+          for(var i=0;i<todoSet.length;i++){
+            if(todoSet[i].id !== todo.id){
+              newSet.push(todoSet[i]);
+            }
+          }
+          //why 直接返回 newSet不会改变数据
+          state.todoSet = newSet;
+        });
+      },
+      changeView: function(viewName){
+        this.setState(function(state){
+           state.currentView = viewName;
+        });
+      },
+      render : function(){
+        var count = 0;
+        var set = this.state.todoSet;
+        var currentView = this.state.currentView;
+        var rendSet = [];
+        var itemIsShow = false;
+        for (var i = 0; i < set.length; i++) {
+          itemIsShow = false;
+          if('active'=== currentView){
+              if(!set[i].checked){
+                itemIsShow = true;
+              }
+          }else if('completed'=== currentView){
+            if(set[i].checked){
+              itemIsShow = true;
+            }
+          }else{
+            itemIsShow = true;
+          }
+          if(itemIsShow){
+            count++;
+            rendSet.push(set[i]);
+          }
+          
+        };
+        return (
+          <div className="todoapp">
+            <TodoHeader callbackParent={this.addTodo}/> 
+            <TodoMain todos={rendSet}
+              callbackHandleStatus={this.changeTodoState}
+              callbackHandleDel={this.deleteTodo}
+            />
+            <TodoFooter todes={this.state.todoSet} count={count} currentView={this.state.currentView} 
+            callback_changeView={this.changeView}/>
+          </div>
+        );
+      }
+    });
+
+    /**
+     * [handleNewTodoKeyDown description]
+     * @param  {[type]} event){                                                         if(event.keyCode              !  [description]
+     * @param  {[type]} handleChange :             function(event){                     this.setState(function(state) {                         return {                newTodo: event.target.value            };        });              } [description]
+     * @param  {[type]} render       :             function(         [description]
+     * @return {[type]}              [description]
+     */
+    var TodoHeader = React.createClass({
+      handleNewTodoKeyDown : function(event){
+          if(event.keyCode !==13){
+            return;
+          }
+          event.preventDefault();
+          var newTodo = this.state.newTodo;
+          console.log('handleNewTodoKeyDown-->  '+this.state.newTodo);
+          // 这里要注意：setState 是一个异步方法，所以需要操作缓存的当前值
+          var obj = new TodoObj(newTodo);
+          this.props.callbackParent(obj);
+          event.target.value = '';
+      },
+      //on 改变事件
+      handleChange : function(event){
+        this.setState(function(state) {
+            return {
+                newTodo: event.target.value
+            };
+        });
+        
+      },
+
+      render : function(){
+        return(
+          <h1>todos</h1>,
+          <div className="header">
+             <input className="new-todo" 
+              placeholder="请输入待办项"
+              onChange = {this.handleChange}
+              onKeyDown = {this.handleNewTodoKeyDown}
+             /> 
+          </div>
+        )
+      }
+    });
+    /**
+     * [render description]
+     * @param  {Function} ){                     var propsTodos [description]
+     * @return {[type]}       [description]
+     */
+    var TodoMain = React.createClass({
+      render : function(){
+        var propsTodos = this.props.todos;
+        console.info(' render   TodoMain  ');
+        console.log(propsTodos);
+        return(
+          <ul className="todo-list">
+              {propsTodos.map((todo, index) => {
+                return (
+                  <TodoItem key={index} todo={todo} 
+                    callbackHandleStatus = {this.props.callbackHandleStatus}
+                    callbackHandleDel={this.props.callbackHandleDel}
+                  />
+                )
+              })}
+          </ul>
+        )
+      }
+    });
+    /**
+     * [render description]
+     * @param  {String} ){                     console.log('rend todoItem ');        return(          <li className [description]
+     * @return {[type]}     [description]
+     */
+    var TodoItem = React.createClass({
+      handleClick : function (event){
+        var todo = this.props.todo;
+        this.props.callbackHandleDel(todo);
+      },
+      handleChange : function(event){
+        console.log('todoItem onChecked');
+        var todo = this.props.todo;
+        if(todo.checked){
+          this.props.callbackHandleStatus(false, todo);
+        }else{
+          this.props.callbackHandleStatus(true, todo);
+        }
+      },
+      render : function(){
+        console.log('rend todoItem ');
+        return(
+          <li className="">
+            <div className="view">
+              <input type="checkbox" className="toggle" 
+                checked={this.props.todo.checked} 
+                data-id={this.props.todo.id} 
+                onChange={this.handleChange}
+              />
+              <label>{this.props.todo.text}</label>
+              <button className="destroy" data-id={this.props.todo.id}
+                onClick={this.handleClick}
+              ></button>
+            </div>
+          </li>
+        )
+      }
+    });
+    /**
+     * [render description]
+     * @param  {String} ){                     return(          <footer className [description]
+     * @return {[type]}     [description]
+     */
+    var TodoFooter = React.createClass({
+      handleClick : function(event){
+        var href=event.target.attributes['href'].value;
+        var viewName = href.replace('#/','');
+        this.props.callback_changeView(viewName);
+      },
+      render : function(){
+        return(
+          <footer className="footer">
+            <span className="todo-count">
+              <strong></strong>item left {this.props.count}
+            </span>
+            <ul className="filters">
+              <li><a className={this.props.currentView==='all'?'selected':''}  href="#/all" onClick={this.handleClick}>All</a></li>
+              <li><a className={this.props.currentView==='active'?'selected':''} href="#/active" onClick={this.handleClick}>Active</a></li>
+              <li><a className={this.props.currentView==='completed'?'selected':''} href="#/completed" onClick={this.handleClick}>Completed</a></li>
+            </ul>
+          </footer>
+        )
+      }
+    });
+    /*
+    
+     */
+    ReactDOM.render(
+      <App></App>
+      ,document.getElementById('todoapp')
+    );
+</script>
+</body>
+</html>

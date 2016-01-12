@@ -51,3 +51,5 @@ React 组件之间交流的方式，可以分为以下 3 种：
 
 [初学webpack与react](http://segmentfault.com/a/1190000003768578)
 [mac博客专题](http://www.jianshu.com/notebooks/230104/latest)
+
+[webpack相关文档](http://webpack.github.io/docs/tutorials/getting-started/#config-file)
