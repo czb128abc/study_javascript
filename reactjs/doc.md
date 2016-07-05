@@ -53,3 +53,47 @@ React 组件之间交流的方式，可以分为以下 3 种：
 [mac博客专题](http://www.jianshu.com/notebooks/230104/latest)
 
 [webpack相关文档](http://webpack.github.io/docs/tutorials/getting-started/#config-file)
+
+[Sites Using React](https://github.com/facebook/react/wiki/Sites-Using-React)
+
+
+#恒哥推荐
+##
+[在SublimeText上搭建ReactJS开发环境](http://segmentfault.com/a/1190000003954626)
+#
+
+http://ninghao.net/blog
+[React学习资料](http://www.jianshu.com/p/d2ae83c3b2bb)
+
+
+##生命周期
+More About Refs
+To learn more about refs, including ways to use them effectively, see our more about refs documentation.
+
+Component Lifecycle
+Components have three main parts of their lifecycle:
+
+###Mounting: A component is being inserted into the DOM.
+###Updating: A component is being re-rendered to determine if the DOM should be updated.
+###Unmounting: A component is being removed from the DOM.
+React provides lifecycle methods that you can specify to hook into this process. We provide will methods, which are called right before something happens, and did methods which are called right after something happens.
+
+###Mounting
+    getInitialState(): 
+object is invoked before a component is mounted. Stateful components should implement this and return the initial state data.
+    componentWillMount() 
+is invoked immediately before mounting occurs.
+    componentDidMount() 
+is invoked immediately after mounting occurs. Initialization that requires DOM nodes should go here.
+###Updating
+    componentWillReceiveProps (object nextProps) 
+is invoked when a mounted component receives new props. This method should be used to compare this.props and nextProps to perform state transitions using this.setState().
+    shouldComponentUpdate(object nextProps, object nextState): 
+boolean is invoked when a component decides whether any changes warrant an update to the DOM. Implement this as an optimization to compare this.props with nextProps and this.state with nextState and return false if React should skip updating.
+    componentWillUpdate(object nextProps, object nextState) 
+is invoked immediately before updating occurs. You cannot call this.setState() here.
+    componentDidUpdate(object prevProps, object prevState) 
+is invoked immediately after updating occurs.
+###Unmounting
+    componentWillUnmount() 
+is invoked immediately before a component is unmounted and destroyed. Cleanup should go here.
